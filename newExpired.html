@@ -1,0 +1,89 @@
+  <!-- 
+  
+  This simple application makes a API call and request the current timestamp in Unix time. 
+  It then compare the time given by the api( The current time) with the one we defined in the document.
+  A message is displayed in the console that let us know if the the date is expired or not.
+  
+  Added a function that converts unix code into human language date (to allow us to make sure that we entered the right dates)  
+  
+  -->
+  
+  
+   <!-- Use this page to convert dates: http://www.epochconverter.com/ -->
+
+   <title>TimeZoneDB JSON Demo</title>
+    <script src="https://timezonedb.googlecode.com/files/timezonedb.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      
+    var theExpirationDate = new Date(1428033540000); // 05/08/2014 13:14:00
+    //var expirationDateInUnix = (1428321600); // suposed to not be expired
+    var expirationDateInUnix = 1427889600; // Should be expired
+      
+    function displayZone(lat, lng){
+        var tz = new TimeZoneDB;
+        tz.getJSON({
+            key: "HT3DEZUJ36RH",
+            lat: lat,
+            lng: lng
+        }, function(data){
+           //alert(data.zoneName);
+           // alert(data.timestamp); // Gets time in Unix and not milliseconds
+           // alert(data.abbreviation);
+           // alert(data.gmtOffset);
+          
+          var currTimeFromApi = data.timestamp;
+          console.log("The current time in unix: " + currTimeFromApi);
+          console.log("The unix expiration date: " + expirationDateInUnix);
+          
+          
+          var convCurr = timeConverter(currTimeFromApi);
+          var convExp = timeConverter(expirationDateInUnix);
+          console.log("The CONVERTED Current time: " + convCurr);
+          console.log("The CONVERTED EXP time: " + convExp);
+          
+          
+          //we call a function that will compare the time
+          checkExpired(currTimeFromApi, expirationDateInUnix );
+        });
+    }
+    
+    </script>
+
+<button onclick="displayZone('35', '139');">Show Time Zone</button>
+   
+   
+   
+   
+  <script>
+    
+    function checkExpired(actualtime, expirationDate){
+//      console.log("DOES NUTHING" + actualtime + "  " + expirationDate); 
+      
+      if( actualtime > expirationDate){
+         console.log("Its expired");
+      }else{
+         console.log("It is not expired yet");
+      }
+      
+      
+    }
+    
+    
+    
+    
+  //For visual confirmation
+  function timeConverter(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp*1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + ',' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    return time;
+  }
+
+
+  </script>
